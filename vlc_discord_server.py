@@ -26,7 +26,7 @@ async def on_message(message):
         await message.channel.send(response)
 
     if message.content == 'join':
-        response = "Please enter the following into your OBS Script: " + str(message.guild)
+        response = "Please enter the following into your OBS Script: " + str(message.guild.id)
         await message.channel.send(response)
 
 
