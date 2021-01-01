@@ -40,15 +40,42 @@ server_bindings = {}
 HOST = '' # Empty string means assign to all interfaces
 PORT = 8420
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serversock:
-    serversock.bind((HOST, PORT))
-    serversock.listen(5)
-    while True:
-        # Accept a connection from external
-        clientsock, addr = serversock.accept()
-        with clientsock:
-            print("Connected to by: ", addr)
-            token = clientsock.recv(MSG_LENGTH)
-            #command = input("Please enter command")
-            #command_bytes = command.encode('utf-8')
-            clientsock.sendall(command_bytes)
+async def handle_connection(reader,writer):
+    data = await reader.read(100)
+    message = data.decode()
+    addr = writer.get_extra_info('peername')
+    print("Received: " + message + " from " + str(addr))
+    writer.write("Hello")
+    await writer.drain()
+    print("Closing")
+    writer.close()
+
+loop = asyncio.get_event_loop()
+coro = asyncio.start_server(handle_connection, HOST, PORT, loop=loop)
+server = loop.run_until_complete(coro)
+
+try:
+    loop.run_forever()
+except KeyboardInterrupt:
+    pass
+
+server.close()
+loop.run_until_complete(server.wait_closed())
+loop.close()
+
+
+
+
+#
+# with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serversock:
+#     serversock.bind((HOST, PORT))
+#     serversock.listen(5)
+#     while True:
+#         # Accept a connection from external
+#         clientsock, addr = serversock.accept()
+#         with clientsock:
+#             print("Connected to by: ", addr)
+#             token = clientsock.recv(MSG_LENGTH)
+#             #command = input("Please enter command")
+#             #command_bytes = command.encode('utf-8')
+#             clientsock.sendall(command_bytes)
