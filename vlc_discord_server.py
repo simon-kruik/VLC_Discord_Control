@@ -11,8 +11,6 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 client = discord.Client()
 
-# COMMANDS = {"list":"LIST",""}
-
 
 
 @client.event
@@ -28,6 +26,8 @@ async def on_message(message):
         await message.channel.send(response)
 
     if message.content == 'join':
+        response = "Please enter the following into your OBS Script: " + str(message.guild)
+        await message.channel.send(response)
 
 
 
@@ -49,7 +49,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serversock:
         with clientsock:
             print("Connected to by: ", addr)
             token = clientsock.recv(MSG_LENGTH)
-            if token not in
             #command = input("Please enter command")
             #command_bytes = command.encode('utf-8')
             clientsock.sendall(command_bytes)
