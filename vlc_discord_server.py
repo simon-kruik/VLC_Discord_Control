@@ -51,7 +51,7 @@ async def handle_connection(reader,writer):
     writer.close()
 
 loop = asyncio.get_event_loop()
-loop.create_task(asyncio.start_server(handle_connection, HOST, PORT)
+loop.create_task(asyncio.start_server(handle_connection, HOST, PORT))
 print('Serving on ' +str(server.sockets[0].getsockname()))
 
 try:
