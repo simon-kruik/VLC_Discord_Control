@@ -44,7 +44,7 @@ PORT = 8420
 
 def accept_client(client_reader,client_writer):
     global clients
-    task = asyncio.Task(handle_client(client_reader,client_writer))
+    task = asyncio.Task(handle_client(client_reader,client_writer,"Testing"))
     clients[task] = (client_reader, client_writer)
 
     def delete_client(task):
