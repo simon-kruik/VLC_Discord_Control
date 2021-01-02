@@ -39,12 +39,13 @@ async def send_message(message, guild, channel):
 ### END DISCORD STUFF
 
 clients = {} # uses Task as key and (reader,writer) as value
+server_ids = {}
 HOST = '' # Empty string means assign to all interfaces
 PORT = 8420
 
 def accept_client(client_reader,client_writer):
     global clients
-    task = asyncio.Task(handle_client(client_reader,client_writer,"Testing"))
+    task = asyncio.Task(handle_client(client_reader,client_writer,"LIST_LIBRARY"))
     clients[task] = (client_reader, client_writer)
 
     def delete_client(task):
@@ -54,6 +55,7 @@ def accept_client(client_reader,client_writer):
     task.add_done_callback(delete_client)
 
 async def handle_client(client_reader, client_writer, task):
+    global server_ids
     client_writer.write("Hello\n".encode())
     await client_writer.drain()
     data = await asyncio.wait_for(client_reader.readline(), 5) # Wait for 5 seconds
@@ -61,11 +63,13 @@ async def handle_client(client_reader, client_writer, task):
         print("I'm getting no data from the client")
 
     string_data = data.decode().rstrip()
-    if string_data != "Heyo":
+    if "Heyo" not in string_data:
         print("Not getting the expected response from the client")
         return ""
     else:
         print("Client says: Heyo")
+    server_id = string_data.split(':')[1]
+    server_ids[server_id] = (client_reader, client_writer)
     task = task + "\n" # append to make it a single line
     client_writer.write(task.encode())
     await client_writer.drain()
