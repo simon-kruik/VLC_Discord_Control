@@ -47,7 +47,7 @@ def accept_client(client_reader,client_writer):
     task = asyncio.Task(handle_client(client_reader,client_writer))
     clients[task] = (client_reader, client_writer)
 
-    def delete_client(task)
+    def delete_client(task):
         del clients[task]
         client_writer.close()
 
@@ -60,7 +60,7 @@ async def handle_client(client_reader, client_writer, task):
         print("I'm getting no data from the client")
 
     string_data = data.decode().rstrip()
-    if string_data != "Heyo"
+    if string_data != "Heyo":
         print("Not getting the expected response from the client")
 
     client_writer.write(task.encode())
