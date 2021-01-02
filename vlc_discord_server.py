@@ -79,6 +79,7 @@ async def handle_client(client_reader, client_writer, task):
     else:
         print("Client says: Heyo")
     server_id = string_data.split(':')[1]
+    print("Server connected: " + server_id)
     server_ids[server_id] = (client_reader, client_writer)
     task = task + "\n" # append to make it a single line
     client_writer.write(task.encode())
