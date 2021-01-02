@@ -23,7 +23,7 @@ async def on_message(message):
     if message.author == client.user:
         return
     if message.content == 'list':
-        response = handle_task(str(message.guild.id), "LIST_LIBRARY")
+        response = await handle_task(str(message.guild.id), "LIST_LIBRARY")
         await message.channel.send(response)
 
     if message.content == 'join':
@@ -43,15 +43,13 @@ server_ids = {}
 HOST = '' # Empty string means assign to all interfaces
 PORT = 8420
 
-def handle_task(server_id, task):
+async def handle_task(server_id, task):
     global server_ids
     print("Looking for server: " + str(server_id))
     print("Current servers connected: " + str(server_ids))
     if server_id in server_ids:
         client_reader, client_writer = server_ids[server_id]
-
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(handle_client(client_reader,client_writer,task))
+        return await handle_client(client_reader,client_writer,task))
     else:
         return "No OBS script connected"
 
