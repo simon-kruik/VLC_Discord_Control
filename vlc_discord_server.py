@@ -6,8 +6,8 @@ import os # Getting environment variables
 import json # For exporting and importing files
 import threading # To run both Discord and Server at same time
 
-MSG_LENTH = 1024
 
+### DISCORD STUFF
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 client = discord.Client()
@@ -30,47 +30,89 @@ async def on_message(message):
         response = "Please enter the following into your OBS Script: " + str(message.guild.id)
         await message.channel.send(response)
 
+async def send_message(message, guild, channel):
+    ## TODO: Send a message to discord, presumably
+    return ""
 
 
-#1client.run(TOKEN)
+#client.run(TOKEN)
+### END DISCORD STUFF
 
-server_bindings = {}
-
-
-
+clients = {} # uses Task as key and (reader,writer) as value
 HOST = '' # Empty string means assign to all interfaces
 PORT = 8420
 
-async def handle_connection(reader,writer):
-    data = await reader.read(100)
-    message = data.decode()
-    addr = writer.get_extra_info('peername')
-    print("Received: " + message + " from " + str(addr))
-    writer.write("Hello")
-    await writer.drain()
-    print("Closing")
-    writer.close()
+def accept_client(client_reader,client_writer):
+    global clients
+    task = asyncio.Task(handle_client(client_reader,client_writer))
+    clients[task] = (client_reader, client_writer)
 
-async def start_server(HOST,PORT):
+    def delete_client(task)
+        del clients[task]
+        client_writer.close()
+
+    task.add_done_callback(delete_client)
+
+async def handle_client(client_reader, client_writer, task):
+    client_writer.write("Hello\n".encode())
+    data = await asyncio.wait_for(client_reader.readline(), 5) # Wait for 5 seconds
+    if data is None:
+        print("I'm getting no data from the client")
+
+    string_data = data.decode().rstrip()
+    if string_data != "Heyo"
+        print("Not getting the expected response from the client")
+
+    client_writer.write(task.encode())
+    data = await asyncio.wait_for(client_reader.readline(), 5)
+    string_data = data.decode().rstrip()
+    print("Received data: " + string_data)
+
+    return string_data
+
+def main():
     loop = asyncio.get_event_loop()
-    coro = asyncio.start_server(handle_connection, HOST, PORT, loop=loop)
-    # THere's an issue with this line that causes it to never complete :/
-    server = loop.run_until_complete(coro)
-
-    print('Serving on {}'.format(server.sockets[0].getsockname()))
-    try:
-        loop.run_forever()
-    except KeyboardInterrupt:
-        pass
-
-    server.close()
-    loop.run_until_complete(server.wait_closed())
-    loop.close()
+    server_task = asyncio.start_server(accept_client, HOST, PORT)
+    loop.run_until_complete(server_task)
+    loop.run_forever()
 
 if __name__ == '__main__':
-    t1 = threading.Thread(target=client.run, args=(TOKEN))
-    start_server(HOST,PORT)
-    t1.start()
+    main()
+
+
+
+
+#
+# async def handle_connection(reader,writer):
+#     data = await reader.read(100)
+#     message = data.decode()
+#     addr = writer.get_extra_info('peername')
+#     print("Received: " + message + " from " + str(addr))
+#     writer.write("Hello")
+#     await writer.drain()
+#     print("Closing")
+#     writer.close()
+#
+# async def start_server(HOST,PORT):
+#     loop = asyncio.get_event_loop()
+#     coro = asyncio.start_server(handle_connection, HOST, PORT, loop=loop)
+#     # THere's an issue with this line that causes it to never complete :/
+#     server = loop.run_until_complete(coro)
+#
+#     print('Serving on {}'.format(server.sockets[0].getsockname()))
+#     try:
+#         loop.run_forever()
+#     except KeyboardInterrupt:
+#         pass
+#
+#     server.close()
+#     loop.run_until_complete(server.wait_closed())
+#     loop.close()
+#
+# if __name__ == '__main__':
+#     t1 = threading.Thread(target=client.run, args=(TOKEN))
+#     await start_server(HOST,PORT)
+#     t1.start()
 
 
 #
