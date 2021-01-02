@@ -45,6 +45,7 @@ PORT = 8420
 
 def handle_task(server_id, task):
     global server_ids
+    print("Looking for server: " + str(server_id))
     print("Current servers connected: " + str(server_ids))
     if server_id in server_ids:
         client_reader, client_writer = server_ids[server_id]
