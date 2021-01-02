@@ -49,7 +49,7 @@ async def handle_task(server_id, task):
     print("Current servers connected: " + str(server_ids))
     if server_id in server_ids:
         client_reader, client_writer = server_ids[server_id]
-        return await handle_client(client_reader,client_writer,task))
+        return await handle_client(client_reader,client_writer,task)
     else:
         return "No OBS script connected"
 
