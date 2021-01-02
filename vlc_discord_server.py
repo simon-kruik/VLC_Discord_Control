@@ -70,28 +70,35 @@ def accept_client(client_reader,client_writer):
 
 async def handle_client(client_reader, client_writer, task):
     global server_ids
-    client_writer.write("Hello\n".encode())
-    await client_writer.drain()
-    data = await asyncio.wait_for(client_reader.readline(), 5) # Wait for 5 seconds
-    if data is None:
-        print("I'm getting no data from the client")
+    try:
+        client_writer.write("Hello\n".encode())
+        await client_writer.drain()
+        data = await asyncio.wait_for(client_reader.readline(), 5) # Wait for 5 seconds
+        if data is None:
+            print("I'm getting no data from the client")
 
-    string_data = data.decode().rstrip()
-    if "Heyo" not in string_data:
-        print("Not getting the expected response from the client")
-        return ""
-    else:
-        print("Client says: Heyo")
-    server_id = string_data.split(':')[1]
-    print("Server connected: " + server_id)
-    server_ids[server_id] = (client_reader, client_writer)
-    task = task + "\n" # append to make it a single line
-    client_writer.write(task.encode())
-    await client_writer.drain()
-    data = await asyncio.wait_for(client_reader.readline(), 5)
-    string_data = data.decode().rstrip()
-    print("Received data: " + string_data)
-    return string_data
+        string_data = data.decode().rstrip()
+        if "Heyo" not in string_data:
+            print("Not getting the expected response from the client")
+            return ""
+        else:
+            print("Client says: Heyo")
+        server_id = string_data.split(':')[1]
+        print("Server connected: " + server_id)
+        server_ids[server_id] = (client_reader, client_writer)
+        task = task + "\n" # append to make it a single line
+        client_writer.write(task.encode())
+        await client_writer.drain()
+        data = await asyncio.wait_for(client_reader.readline(), 5)
+        string_data = data.decode().rstrip()
+        print("Received data: " + string_data)
+        return string_data
+
+    except ConnectionResetError:
+        return "Client has been disconnected"
+    except concurrent.futures._base.TimeoutError:
+        return "Connection timed out"
+
 
 def main():
     loop = asyncio.get_event_loop()
