@@ -96,7 +96,7 @@ async def handle_client(client_reader, client_writer, task):
 
     except ConnectionResetError:
         return "Client has been disconnected"
-    except concurrent.futures._base.TimeoutError:
+    except asyncio.TimeoutError:
         return "Connection timed out"
 
 
