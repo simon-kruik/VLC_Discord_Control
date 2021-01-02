@@ -51,7 +51,7 @@ async def handle_connection(reader,writer):
     print("Closing")
     writer.close()
 
-async def start_server(HOST,PORT)
+async def start_server(HOST,PORT):
     loop = asyncio.get_event_loop()
     coro = asyncio.start_server(handle_connection, HOST, PORT, loop=loop)
     # THere's an issue with this line that causes it to never complete :/
