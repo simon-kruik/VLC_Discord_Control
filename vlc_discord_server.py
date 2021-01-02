@@ -23,7 +23,7 @@ async def on_message(message):
     if message.author == client.user:
         return
     if message.content == 'list':
-        response = "Listing files in the library is not currently available"
+        response = await
         await message.channel.send(response)
 
     if message.content == 'join':
@@ -43,6 +43,16 @@ server_ids = {}
 HOST = '' # Empty string means assign to all interfaces
 PORT = 8420
 
+def handle_task(server_id, task):
+    if server_id in server_ids:
+        client_reader, client_writer = server_ids[server_id]
+
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(handle_client(client_reader,client_writer,task))
+    else:
+        return "No OBS script connected"
+
+
 def accept_client(client_reader,client_writer):
     global clients
     task = asyncio.Task(handle_client(client_reader,client_writer,"LIST_LIBRARY"))
@@ -52,7 +62,7 @@ def accept_client(client_reader,client_writer):
         del clients[task]
         client_writer.close()
 
-    task.add_done_callback(delete_client)
+    #task.add_done_callback(delete_client)
 
 async def handle_client(client_reader, client_writer, task):
     global server_ids
