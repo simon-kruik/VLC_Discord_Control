@@ -4,6 +4,7 @@ import discord # Requires "pip install discord.py" module for interacting with d
 from dotenv import load_dotenv # Loading environment variables
 import os # Getting environment variables
 import json # For exporting and importing files
+import threading # To run both Discord and Server at same time
 
 MSG_LENTH = 1024
 
@@ -31,7 +32,7 @@ async def on_message(message):
 
 
 
-#client.run(TOKEN)
+#1client.run(TOKEN)
 
 server_bindings = {}
 
@@ -50,20 +51,27 @@ async def handle_connection(reader,writer):
     print("Closing")
     writer.close()
 
-loop = asyncio.get_event_loop()
-loop.create_task(asyncio.start_server(handle_connection, HOST, PORT))
-print('Serving on ' +str(server.sockets[0].getsockname()))
+async def start_server(HOST,PORT)
+    loop = asyncio.get_event_loop()
+    coro = asyncio.start_server(handle_connection, HOST, PORT, loop=loop)
+    # THere's an issue with this line that causes it to never complete :/
+    server = loop.run_until_complete(coro)
 
-try:
-    loop.run_forever()
-except KeyboardInterrupt:
-    pass
+    print('Serving on {}'.format(server.sockets[0].getsockname()))
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
 
-server.close()
-loop.run_until_complete(server.wait_closed())
-loop.close()
+    server.close()
+    loop.run_until_complete(server.wait_closed())
+    loop.close()
 
-
+if __name__ == '__main__':
+    t1 = threading.Thread(target=client.run, args=(TOKEN))
+    t2 = threading.Thread(target=start_server, args=(HOST,PORT))
+    t1.start()
+    t2.start()
 
 
 #
