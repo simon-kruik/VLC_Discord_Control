@@ -66,18 +66,19 @@ async def handle_client(client_reader, client_writer, task):
         return ""
     else:
         print("Client says: Heyo")
-        task = task + "\n" # append to make it a single line
-        client_writer.write(task.encode())
-        await client_writer.drain()
-        data = await asyncio.wait_for(client_reader.readline(), 5)
-        string_data = data.decode().rstrip()
-        print("Received data: " + string_data)
-        return string_data
+    task = task + "\n" # append to make it a single line
+    client_writer.write(task.encode())
+    await client_writer.drain()
+    data = await asyncio.wait_for(client_reader.readline(), 5)
+    string_data = data.decode().rstrip()
+    print("Received data: " + string_data)
+    return string_data
 
 def main():
     loop = asyncio.get_event_loop()
     server_task = asyncio.start_server(accept_client, HOST, PORT)
     loop.run_until_complete(server_task)
+    loop.run_until_complete(client.run(TOKEN))
     loop.run_forever()
 
 if __name__ == '__main__':
