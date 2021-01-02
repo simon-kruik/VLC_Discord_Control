@@ -62,7 +62,8 @@ async def handle_client(client_reader, client_writer, task):
     string_data = data.decode().rstrip()
     if string_data != "Heyo":
         print("Not getting the expected response from the client")
-
+    else:
+        print("Client says: Heyo")
     client_writer.write(task.encode())
     data = await asyncio.wait_for(client_reader.readline(), 5)
     string_data = data.decode().rstrip()
