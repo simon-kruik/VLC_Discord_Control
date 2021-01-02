@@ -69,9 +69,8 @@ async def start_server(HOST,PORT):
 
 if __name__ == '__main__':
     t1 = threading.Thread(target=client.run, args=(TOKEN))
-    t2 = threading.Thread(target=start_server, args=(HOST,PORT))
+    start_server(HOST,PORT)
     t1.start()
-    t2.start()
 
 
 #
