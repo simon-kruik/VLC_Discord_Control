@@ -44,6 +44,8 @@ HOST = '' # Empty string means assign to all interfaces
 PORT = 8420
 
 def handle_task(server_id, task):
+    global server_ids
+    print("Current servers connected: " + str(server_ids))
     if server_id in server_ids:
         client_reader, client_writer = server_ids[server_id]
 
