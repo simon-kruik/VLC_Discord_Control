@@ -55,6 +55,7 @@ def accept_client(client_reader,client_writer):
 
 async def handle_client(client_reader, client_writer, task):
     client_writer.write("Hello\n".encode())
+    await client_writer.drain()
     data = await asyncio.wait_for(client_reader.readline(), 5) # Wait for 5 seconds
     if data is None:
         print("I'm getting no data from the client")
@@ -65,7 +66,9 @@ async def handle_client(client_reader, client_writer, task):
         return ""
     else:
         print("Client says: Heyo")
+        task = task + "\n" # append to make it a single line
         client_writer.write(task.encode())
+        await client_writer.drain()
         data = await asyncio.wait_for(client_reader.readline(), 5)
         string_data = data.decode().rstrip()
         print("Received data: " + string_data)
