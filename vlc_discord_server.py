@@ -50,7 +50,7 @@ async def handle_task(server_id, task):
     if server_id in server_ids:
         client_reader, client_writer = server_ids[server_id]
         response = await handle_client(client_reader,client_writer,task)
-        if response = "":
+        if response == "":
             response = "No message received from Client"
         return response
     else:
