@@ -53,8 +53,7 @@ async def handle_task(server_id, task):
         response = await handle_client(client_reader,client_writer,task)
         if response == "":
             response = "No message received from Client"
-        else:
-            await send_dm("OBS client connected", server_id.split('.')[1])
+
         return response
     else:
         return "No OBS script connected"
@@ -88,6 +87,8 @@ async def handle_client(client_reader, client_writer, task):
             print("Client says: Heyo")
         server_id = string_data.split(':')[1]
         print("Server connected: " + server_id)
+        await send_dm("OBS client connected", server_id.split('.')[1])
+        # TODO: If there's already a server connected here, close it properly, then set a new one
         server_ids[server_id] = (client_reader, client_writer)
         task = task + "\n" # append to make it a single line
         client_writer.write(task.encode())
