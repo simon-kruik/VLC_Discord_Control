@@ -23,7 +23,7 @@ async def on_message(message):
     if message.author == client.user:
         return
     if message.content == 'list':
-        response = await handle_task(str(message.guild.id), "LIST_LIBRARY")
+        response = await handle_task(str(message.guild.id) + str(message.author.id), "LIST_LIBRARY")
         await message.channel.send(response)
 
     if message.content == 'join':
