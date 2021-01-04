@@ -30,7 +30,6 @@ async def on_message(message):
         response = "Please enter the following into your OBS Script: " + str(message.guild.id) + "." + str(message.author.id)
         await message.channel.send(response)
 
-@bot.command
 async def send_dm(message, user_id):
     user = client.fetch_user(user_id)
     print("Sending message to: ", user, "\n",message)
