@@ -27,12 +27,12 @@ async def on_message(message):
         await message.channel.send(response)
 
     if message.content == 'join':
-        response = "Please enter the following into your OBS Script: " + str(message.guild.id)
+        response = "Please enter the following into your OBS Script: " + str(message.guild.id) + "." + str(message.author.id)
         await message.channel.send(response)
 
-async def send_message(message, guild, channel):
-    ## TODO: Send a message to discord, presumably
-    return ""
+async def send_dm(message, user):
+    user = client.get_user(user)
+    await user.send(message)
 
 
 #client.run(TOKEN)
@@ -52,6 +52,8 @@ async def handle_task(server_id, task):
         response = await handle_client(client_reader,client_writer,task)
         if response == "":
             response = "No message received from Client"
+        else:
+            await send_dm("OBS client connected", server_id.split('.')[1])
         return response
     else:
         return "No OBS script connected"
