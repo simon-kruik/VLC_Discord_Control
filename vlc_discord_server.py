@@ -31,7 +31,7 @@ async def on_message(message):
         await message.channel.send(response)
 
 async def send_dm(message, user_id):
-    user = client.fetch_user(user_id)
+    user = await client.fetch_user(user_id)
     print("Sending message to: ", user, "\n",message)
     await user.send(message)
 
