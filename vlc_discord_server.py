@@ -87,7 +87,7 @@ async def handle_client(client_reader, client_writer, task):
             print("Client says: Heyo")
         server_id = string_data.split(':')[1]
         print("Server connected: " + server_id)
-        await send_dm("OBS client connected", server_id.split('.')[1])
+        await send_dm("OBS client connected from: " + str(client_writer._transport.get_extra_info('peername')), server_id.split('.')[1])
         # TODO: If there's already a server connected here, close it properly, then set a new one
         server_ids[server_id] = (client_reader, client_writer)
         task = task + "\n" # append to make it a single line
