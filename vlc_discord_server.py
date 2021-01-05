@@ -20,14 +20,21 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    server_id = str(message.guild.id) + "." + str(message.author.id)
+    # TODO: Add a message prefix, and save to local json file
     if message.author == client.user:
-        return
+        return ""
     if message.content == 'list':
-        response = await handle_task(str(message.guild.id) + "." + str(message.author.id), "LIST_LIBRARY")
+        response = await handle_task(server_id,  "LIST_LIBRARY")
+        await message.channel.send(response)
+
+    if message.content.startswith('search'):
+        args = message.content.replace("search","",1) # Replaces maximum of 1 use of term 'search' - leaving just the following arguments
+        response = await handle_task(server_id, "SEARCH", args)
         await message.channel.send(response)
 
     if message.content == 'join':
-        response = "Please enter the following into your OBS Script: " + str(message.guild.id) + "." + str(message.author.id)
+        response = "Please enter the following into your OBS Script: " + server_id)
         await message.channel.send(response)
 
 async def send_dm(message, user_id):
@@ -44,13 +51,13 @@ server_ids = {}
 HOST = '' # Empty string means assign to all interfaces
 PORT = 8420
 
-async def handle_task(server_id, task):
+async def handle_task(server_id, task, arg=None):
     global server_ids
     print("Looking for server: " + str(server_id))
     print("Current servers connected: " + str(server_ids))
     if server_id in server_ids:
         client_reader, client_writer = server_ids[server_id]
-        response = await handle_client(client_reader,client_writer,task)
+        response = await handle_client(client_reader,client_writer,task, arg)
         if response == "":
             response = "No message received from Client"
 
@@ -61,7 +68,7 @@ async def handle_task(server_id, task):
 
 def accept_client(client_reader,client_writer):
     global clients
-    task = asyncio.Task(handle_client(client_reader,client_writer,"LIST_LIBRARY"))
+    task = asyncio.Task(handle_client(client_reader,client_writer,"HELLO"))
     clients[task] = (client_reader, client_writer)
 
     def delete_client(task):
@@ -70,7 +77,7 @@ def accept_client(client_reader,client_writer):
 
     #task.add_done_callback(delete_client)
 
-async def handle_client(client_reader, client_writer, task):
+async def handle_client(client_reader, client_writer, task, arg=None):
     global server_ids
     try:
         client_writer.write("Hello\n".encode())
@@ -90,7 +97,10 @@ async def handle_client(client_reader, client_writer, task):
         await send_dm("OBS client connected from: " + str(client_writer._transport.get_extra_info('peername')[0]), server_id.split('.')[1])
         # TODO: If there's already a server connected here, close it properly, then set a new one
         server_ids[server_id] = (client_reader, client_writer)
-        task = task + "\n" # append to make it a single line
+        if arg:
+            task = task + "~" + arg + "\n" #add arg delimited by ~
+        else:
+            task = task + "\n" # append to make it a single line
         client_writer.write(task.encode())
         await client_writer.drain()
         data = await asyncio.wait_for(client_reader.readline(), 5)
