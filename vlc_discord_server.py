@@ -34,7 +34,7 @@ async def on_message(message):
         await message.channel.send(response)
 
     if message.content == 'join':
-        response = "Please enter the following into your OBS Script: " + server_id)
+        response = "Please enter the following into your OBS Script: " + server_id
         await message.channel.send(response)
 
 async def send_dm(message, user_id):
