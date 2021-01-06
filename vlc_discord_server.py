@@ -42,6 +42,10 @@ async def send_dm(message, user_id):
     print("Sending message to: ", user, "\n",message)
     await user.send(message)
 
+async def send_embed(server_id, title, message_content):
+    embed_message = discord.embed(Title=title)
+    #TODO: Split out this embed code into a separate file determining how messages should look
+
 
 #client.run(TOKEN)
 ### END DISCORD STUFF
@@ -94,7 +98,9 @@ async def handle_client(client_reader, client_writer, task, arg=None):
             print("Client says: Heyo")
         server_id = string_data.split(':')[1]
         print("Server connected: " + server_id)
-        await send_dm("OBS client connected from: " + str(client_writer._transport.get_extra_info('peername')[0]), server_id.split('.')[1])
+        # TODO: Only send this on initial connection, not on subsequent commands
+        if server_id not in server_ids:
+            await send_dm("OBS client connected from: " + str(client_writer._transport.get_extra_info('peername')[0]), server_id.split('.')[1])
         # TODO: If there's already a server connected here, close it properly, then set a new one
         server_ids[server_id] = (client_reader, client_writer)
         if arg:
