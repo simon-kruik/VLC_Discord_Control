@@ -8,7 +8,7 @@ NEXT_ARROW = "➡"
 PREVIOUS_ARROW = "⬅"
 
 async def send_video_list(discord_client, video_list, channel_id, page=1):
-    embed_message = discord.embed(Title="Videos Available:", colour=COLOUR)
+    embed_message = discord.Embed(Title="Videos Available:", colour=COLOUR)
     if (len(video_list) > PAGE_SIZE):
         start = (page-1) * PAGE_SIZE
         end = page * PAGE_SIZE
