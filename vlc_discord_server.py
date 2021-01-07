@@ -6,7 +6,7 @@ import os # Getting environment variables
 import json # For exporting and importing files
 import threading # To run both Discord and Server at same time
 
-import discord_messages as dm
+import discord_messages as dms
 
 
 ### DISCORD STUFF
