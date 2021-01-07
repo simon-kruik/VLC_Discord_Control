@@ -6,6 +6,8 @@ import os # Getting environment variables
 import json # For exporting and importing files
 import threading # To run both Discord and Server at same time
 
+import discord_messages as dm
+
 
 ### DISCORD STUFF
 load_dotenv()
@@ -26,7 +28,7 @@ async def on_message(message):
         return ""
     if message.content == 'list':
         response = await handle_task(server_id,  "LIST_LIBRARY")
-        await message.channel.send(response)
+        await dms.send_video_list(client, response, message.channel.id)
 
     if message.content.startswith('search'):
         args = message.content.replace("search","",1) # Replaces maximum of 1 use of term 'search' - leaving just the following arguments
@@ -42,8 +44,6 @@ async def send_dm(message, user_id):
     print("Sending message to: ", user, "\n",message)
     await user.send(message)
 
-async def send_embed(server_id, title, message_content):
-    embed_message = discord.embed(Title=title)
     #TODO: Split out this embed code into a separate file determining how messages should look
 
 
