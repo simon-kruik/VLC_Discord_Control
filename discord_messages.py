@@ -22,6 +22,6 @@ async def send_video_list(discord_client, video_list, channel_id, page=1):
     message = await channel.send(embed=embed_message)
 
     if page < total_pages:
-        await message.add_reaction(message, NEXT_ARROW)
+        await message.add_reaction(NEXT_ARROW)
     if page > 1:
-        await message.add_reaction(message, PREVIOUS_ARROW)
+        await message.add_reaction(PREVIOUS_ARROW)
