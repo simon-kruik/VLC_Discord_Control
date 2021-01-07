@@ -28,7 +28,8 @@ async def on_message(message):
         return ""
     if message.content == 'list':
         response = await handle_task(server_id,  "LIST_LIBRARY")
-        await dms.send_video_list(client, response, message.channel.id)
+        list = eval(response)
+        await dms.send_video_list(client, list, message.channel.id)
 
     if message.content.startswith('search'):
         args = message.content.replace("search","",1) # Replaces maximum of 1 use of term 'search' - leaving just the following arguments

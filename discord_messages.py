@@ -15,7 +15,7 @@ async def send_video_list(discord_client, video_list, channel_id, page=1):
         video_list = video_list[start:end]
     for item in video_list:
         embed_message.add_field(name=item,value="\u200b")
-    embed_message.set_footer(text="Page" + str(page) + "/" + str(ceil(len(video_list)/PAGE_SIZE))) # e.g. Page 2/5
+    embed_message.set_footer(text="Page: " + str(page) + "/" + str(ceil(len(video_list)/PAGE_SIZE))) # e.g. Page 2/5
     channel = discord_client.get_channel(channel_id)
 
     message = await channel.send(embed=embed_message)
